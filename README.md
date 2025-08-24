@@ -1,2 +1,2 @@
-# unescohackathon
-Our Github repo for our entry on UNESCO's Hackathon.
+# UNESCO Hackathon
+Our Github repo for Philippine School Doha's entry on UNESCO's Hackathon.
