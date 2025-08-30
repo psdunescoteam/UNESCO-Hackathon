@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View, ScrollView } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, View, ScrollView, ActivityIndicator } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -8,19 +8,57 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function HomeScreen() {
   const [text, setText] = useState('');
-  const [analysis, setAnalysis] = useState<{ word: string; isMisinformation: boolean }[] | null>(null);
+  const [analysis, setAnalysis] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const colorScheme = useColorScheme();
 
-  const handleCheckText = () => {
-    // In a real app, you would make an API call to a backend service
-    // to check for misinformation.
-    // For this example, we'll just simulate a check.
-    const words = text.split(/\\s+/);
-    const analysisResult = words.map(word => ({
-      word,
-      isMisinformation: Math.random() > 0.8 && word.length > 3, // Randomly flag words longer than 3 chars
-    }));
-    setAnalysis(analysisResult);
+  const handleCheckText = async () => {
+    if (!text.trim()) {
+      setAnalysis('Please enter some text to check.');
+      return;
+    }
+    setLoading(true);
+    setAnalysis(null);
+
+    try {
+      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer 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', // <-- IMPORTANT: Replace with your Perplexity API key
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'sonar-small-chat',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a fact-checking assistant. Analyze the following text for misinformation. Respond with your analysis.'
+            },
+            {
+              role: 'user',
+              content: text
+            }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      if (data.choices && data.choices.length > 0) {
+        setAnalysis(data.choices[0].message.content);
+      } else {
+        setAnalysis('Could not get a response from the AI. Please try again.');
+      }
+    } catch (error) {
+      console.error(error);
+      setAnalysis(`An error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -59,25 +97,19 @@ export default function HomeScreen() {
     resultsContainer: {
       marginTop: 20,
     },
-    resultTextContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
+    resultText: {
       marginTop: 8,
       padding: 10,
       borderRadius: 8,
       borderWidth: 1,
       borderColor: Colors[colorScheme ?? 'light'].tint,
       backgroundColor: Colors[colorScheme ?? 'light'].background,
-    },
-    normalText: {
-      fontSize: 18,
+      fontSize: 16,
       color: Colors[colorScheme ?? 'light'].text,
     },
-    misinformation: {
-      fontSize: 18,
-      backgroundColor: 'yellow',
-      color: 'red',
-    },
+    loadingIndicator: {
+      marginTop: 20,
+    }
   });
 
   return (
@@ -95,23 +127,18 @@ export default function HomeScreen() {
           placeholderTextColor={Colors[colorScheme ?? 'light'].text}
         />
   
-        <TouchableOpacity style={styles.button} onPress={handleCheckText}>
-          <ThemedText style={styles.buttonText}>Check Text</ThemedText>
+        <TouchableOpacity style={styles.button} onPress={handleCheckText} disabled={loading}>
+          <ThemedText style={styles.buttonText}>{loading ? 'Checking...' : 'Check Text'}</ThemedText>
         </TouchableOpacity>
   
+        {loading && <ActivityIndicator size="large" style={styles.loadingIndicator} color={Colors[colorScheme ?? 'light'].tint} />}
+
         {analysis && (
           <View style={styles.resultsContainer}>
             <ThemedText type="subtitle">Analysis Result:</ThemedText>
-            <View style={styles.resultTextContainer}>
-              {analysis.map((item, index) => (
-                <ThemedText
-                  key={index}
-                  style={item.isMisinformation ? styles.misinformation : styles.normalText}
-                >
-                  {item.word}{' '}
-                </ThemedText>
-              ))}
-            </View>
+            <ThemedText style={styles.resultText}>
+              {analysis}
+            </ThemedText>
           </View>
         )}
       </ThemedView>
