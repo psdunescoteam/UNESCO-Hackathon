@@ -1,69 +1,9 @@
-import { PERPLEXITY_API_KEY } from '@env';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { Link } from 'expo-router';
+import { StyleSheet, Text, View, useColorScheme } from 'react-native';
 
-export default function Index() {
-  const [text, setText] = useState('');
-  const [result, setResult] = useState('');
-  const [loading, setLoading] = useState(false);
+export default function HomeScreen() {
   const colorScheme = useColorScheme();
-
-  const handleFactCheck = async () => {
-    if (!text) {
-      setResult('Please enter some text to fact-check.');
-      return;
-    }
-    setLoading(true);
-    setResult('');
-
-    const url = 'https://api.perplexity.ai/chat/completions';
-    const headers = {
-      Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
-      'Content-Type': 'application/json',
-    };
-
-    const payload = {
-      model: 'sonar-pro',
-      messages: [
-        { role: 'system', content: 'Be precise and factual.' },
-        { role: 'user', content: `Fact-check the following text: "${text}"` },
-      ],
-    };
-
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
-        setResult(data.choices[0].message.content);
-      } else {
-        console.error('Unexpected API response structure:', data);
-        setResult('Sorry, something went wrong while processing the result.');
-      }
-    } catch (error) {
-      console.error('Error during fact-check:', error);
-      setResult('Sorry, an error occurred while trying to fact-check.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const themeStyles = {
     container: {
@@ -75,120 +15,91 @@ export default function Index() {
     subtitle: {
       color: colorScheme === 'dark' ? '#A9A9A9' : '#6C757D',
     },
-    input: {
-      borderColor: colorScheme === 'dark' ? '#444' : '#CED4DA',
-      backgroundColor: colorScheme === 'dark' ? '#2C2C2C' : '#FFFFFF',
-      color: colorScheme === 'dark' ? '#FFFFFF' : '#212529',
-    },
-    resultContainer: {
-      backgroundColor: colorScheme === 'dark' ? '#2C2C2C' : '#FFFFFF',
-    },
-    resultText: {
+    featureText: {
       color: colorScheme === 'dark' ? '#EAEAEA' : '#343A40',
+    },
+    button: {
+      backgroundColor: '#007BFF',
+    },
+    buttonText: {
+      color: '#FFFFFF',
     },
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={[styles.container, themeStyles.container]}>
-      <View style={styles.header}>
-        <Text style={[styles.title, themeStyles.title]}>Fact-Checker AI</Text>
-        <Text style={[styles.subtitle, themeStyles.subtitle]}>Powered by Perplexity</Text>
+    <View style={[styles.container, themeStyles.container]}>
+      <Ionicons name="shield-checkmark-outline" size={80} color="#007BFF" />
+      <Text style={[styles.title, themeStyles.title]}>Welcome to Fact-Checker AI</Text>
+      <Text style={[styles.subtitle, themeStyles.subtitle]}>Your trusted source for verifying information.</Text>
+
+      <View style={styles.featuresContainer}>
+        <View style={styles.feature}>
+          <Ionicons name="build-outline" size={32} color="#007BFF" />
+          <Text style={[styles.featureText, themeStyles.featureText]}>
+            <Text style={styles.bold}>Easy Mode:</Text> Quickly check facts with our default AI model.
+          </Text>
+        </View>
+        <View style={styles.feature}>
+          <Ionicons name="business-outline" size={32} color="#007BFF" />
+          <Text style={[styles.featureText, themeStyles.featureText]}>
+            <Text style={styles.bold}>Professional Mode:</Text> Choose from a variety of AI models for more in-depth analysis.
+          </Text>
+        </View>
       </View>
-      <TextInput
-        style={[styles.input, themeStyles.input]}
-        placeholder="Enter text to fact-check..."
-        placeholderTextColor={colorScheme === 'dark' ? '#A9A9A9' : '#6C757D'}
-        onChangeText={setText}
-        value={text}
-        multiline
-      />
-      <TouchableOpacity style={styles.button} onPress={handleFactCheck} disabled={loading}>
-        <Ionicons name="shield-checkmark-outline" size={20} color="white" />
-        <Text style={styles.buttonText}>Fact-Check</Text>
-      </TouchableOpacity>
-      {loading && <ActivityIndicator size="large" color="#007BFF" style={styles.loader} />}
-      {result ? (
-        <ScrollView style={[styles.resultContainer, themeStyles.resultContainer]}>
-          <Text style={[styles.resultText, themeStyles.resultText]}>{result}</Text>
-        </ScrollView>
-      ) : null}
-    </KeyboardAvoidingView>
+
+      <Link href="/(tabs)/easy" style={[styles.button, themeStyles.button]}>
+        <Text style={[styles.buttonText, themeStyles.buttonText]}>Get Started</Text>
+      </Link>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
-  },
-  header: {
     alignItems: 'center',
-    marginBottom: 32,
-    marginTop: 48,
+    justifyContent: 'center',
+    padding: 24,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     fontFamily: 'SpaceMono',
+    textAlign: 'center',
+    marginTop: 24,
   },
   subtitle: {
     fontSize: 16,
-    marginTop: 8,
     fontFamily: 'SpaceMono',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 32,
   },
-  input: {
-    width: '100%',
-    height: 180,
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    fontSize: 16,
-    textAlignVertical: 'top',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+  featuresContainer: {
+    marginBottom: 32,
   },
-  button: {
+  feature: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#007BFF',
+    marginBottom: 16,
+  },
+  featureText: {
+    marginLeft: 16,
+    fontSize: 16,
+    flex: 1,
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  button: {
     paddingVertical: 16,
+    paddingHorizontal: 32,
     borderRadius: 12,
-    width: '100%',
-    shadowColor: '#007BFF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 6,
   },
   buttonText: {
-    color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 8,
     fontFamily: 'SpaceMono',
-  },
-  loader: {
-    marginTop: 24,
-  },
-  resultContainer: {
-    marginTop: 24,
-    width: '100%',
-    maxHeight: 300,
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-  },
-  resultText: {
-    fontSize: 16,
-    lineHeight: 24,
   },
 });
 
