@@ -60,22 +60,33 @@ export default function HomeScreen() {
 
   const themeStyles = {
     container: {
-      backgroundColor: isDarkMode ? '#000000' : '#FFFFFF',
+      backgroundColor: isDarkMode ? '#0a0a0a' : '#f8f9fa',
     },
     blur: {
-      backgroundColor: isDarkMode ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.7)',
+      backgroundColor: isDarkMode ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)',
     },
     title: {
-      color: isDarkMode ? '#FFFFFF' : '#000000',
+      color: isDarkMode ? '#ffffff' : '#212529',
     },
     subtitle: {
-      color: isDarkMode ? '#A9A9A9' : '#6C757D',
+      color: isDarkMode ? '#b0b0b0' : '#6c757d',
     },
     featureText: {
-      color: isDarkMode ? '#EAEAEA' : '#343A40',
+      color: isDarkMode ? '#e0e0e0' : '#495057',
     },
     buttonText: {
-      color: '#FFFFFF',
+      color: '#ffffff',
+    },
+    heroSection: {
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
+    },
+    featureCard: {
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)',
+      borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+    },
+    secondaryButton: {
+      backgroundColor: isDarkMode ? 'rgba(0,123,255,0.1)' : 'rgba(0,123,255,0.05)',
+      borderColor: '#007BFF',
     },
   };
 
@@ -93,39 +104,90 @@ export default function HomeScreen() {
       </View>
       <BlurView intensity={80} tint={isDarkMode ? 'dark' : 'light'} style={styles.blur}>
         <View style={styles.content}>
-          <Ionicons name="shield-checkmark-outline" size={80} color="#007BFF" />
-          <Text style={[styles.title, themeStyles.title]}>Welcome to Fact-Checker AI</Text>
-          <Text style={[styles.subtitle, themeStyles.subtitle]}>Your trusted source for verifying information.</Text>
+          <View style={styles.logoContainer}>
+            <View style={[styles.logoBackground, { backgroundColor: isDarkMode ? '#1a1a2e' : '#ffffff' }]}>
+              <Ionicons name="shield-checkmark" size={64} color="#007BFF" />
+            </View>
+            <Text style={[styles.appName, themeStyles.title]}>FactCheck AI</Text>
+            <Text style={[styles.tagline, themeStyles.subtitle]}>Powered by Advanced AI Models</Text>
+          </View>
 
-          <View style={styles.featuresContainer}>
-            <View style={styles.feature}>
-              <Ionicons name="build-outline" size={32} color="#007BFF" />
-              <Text style={[styles.featureText, themeStyles.featureText]}>
-                <Text style={styles.bold}>Easy Mode:</Text> Quickly check facts with our default AI model.
+          <View style={[styles.heroSection, themeStyles.heroSection]}>
+            <Text style={[styles.title, themeStyles.title]}>Verify Information</Text>
+            <Text style={[styles.title, themeStyles.title]}>with Confidence</Text>
+            <Text style={[styles.subtitle, themeStyles.subtitle]}>
+              Professional fact-checking powered by multiple AI models. Highlight any text to verify specific claims instantly.
+            </Text>
+          </View>
+
+          <View style={styles.featuresGrid}>
+            <View style={[styles.featureCard, themeStyles.featureCard]}>
+              <View style={[styles.featureIcon, { backgroundColor: '#007BFF20' }]}>
+                <Ionicons name="flash" size={28} color="#007BFF" />
+              </View>
+              <Text style={[styles.featureTitle, themeStyles.title]}>Quick Check</Text>
+              <Text style={[styles.featureDescription, themeStyles.subtitle]}>
+                Instant fact-checking with smart text selection
               </Text>
             </View>
-            <View style={styles.feature}>
-              <Ionicons name="business-outline" size={32} color="#007BFF" />
-              <Text style={[styles.featureText, themeStyles.featureText]}>
-                <Text style={styles.bold}>Professional Mode:</Text> Choose from a variety of AI models for more in-depth analysis.
+
+            <View style={[styles.featureCard, themeStyles.featureCard]}>
+              <View style={[styles.featureIcon, { backgroundColor: '#28a74520' }]}>
+                <Ionicons name="analytics" size={28} color="#28a745" />
+              </View>
+              <Text style={[styles.featureTitle, themeStyles.title]}>Accuracy Score</Text>
+              <Text style={[styles.featureDescription, themeStyles.subtitle]}>
+                Get truthfulness ratings from 0-100
+              </Text>
+            </View>
+
+            <View style={[styles.featureCard, themeStyles.featureCard]}>
+              <View style={[styles.featureIcon, { backgroundColor: '#6f42c120' }]}>
+                <Ionicons name="options" size={28} color="#6f42c1" />
+              </View>
+              <Text style={[styles.featureTitle, themeStyles.title]}>Multiple AIs</Text>
+              <Text style={[styles.featureDescription, themeStyles.subtitle]}>
+                Choose from various AI models for analysis
+              </Text>
+            </View>
+
+            <View style={[styles.featureCard, themeStyles.featureCard]}>
+              <View style={[styles.featureIcon, { backgroundColor: '#fd7e1420' }]}>
+                <Ionicons name="search" size={28} color="#fd7e14" />
+              </View>
+              <Text style={[styles.featureTitle, themeStyles.title]}>Deep Analysis</Text>
+              <Text style={[styles.featureDescription, themeStyles.subtitle]}>
+                Detailed breakdowns with source verification
               </Text>
             </View>
           </View>
 
-          <Animated.View
-            entering={require('react-native-reanimated').FadeInUp.delay(500)}
-          >
-            <TouchableOpacity style={styles.button} onPress={() => router.push('/(tabs)/easy')}>
-              <LinearGradient
-                colors={['#007BFF', '#00C6FF']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.buttonGradient}
-              >
-                <Text style={[styles.buttonText, themeStyles.buttonText]}>Get Started</Text>
-              </LinearGradient>
+          <View style={styles.buttonContainer}>
+            <Animated.View
+              entering={require('react-native-reanimated').FadeInUp.delay(500)}
+              style={styles.primaryButtonWrapper}
+            >
+              <TouchableOpacity style={styles.primaryButton} onPress={() => router.push('/(tabs)/easy')}>
+                <LinearGradient
+                  colors={['#007BFF', '#0056b3']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.buttonGradient}
+                >
+                  <Ionicons name="arrow-forward" size={20} color="white" style={styles.buttonIcon} />
+                  <Text style={styles.primaryButtonText}>Start Fact-Checking</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Animated.View>
+            
+            <TouchableOpacity 
+              style={[styles.secondaryButton, themeStyles.secondaryButton]} 
+              onPress={() => router.push('/(tabs)/professional')}
+            >
+              <Ionicons name="settings" size={18} color="#007BFF" style={styles.buttonIcon} />
+              <Text style={[styles.secondaryButtonText, { color: '#007BFF' }]}>Professional Mode</Text>
             </TouchableOpacity>
-          </Animated.View>
+          </View>
         </View>
       </BlurView>
     </View>
@@ -150,6 +212,127 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
     padding: 24,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logoBackground: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  logoText: {
+    fontSize: 48,
+    fontWeight: 'bold',
+  },
+  appName: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+    letterSpacing: 0.5,
+  },
+  tagline: {
+    fontSize: 16,
+    textAlign: 'center',
+    opacity: 0.8,
+  },
+  heroSection: {
+    padding: 24,
+    borderRadius: 16,
+    marginVertical: 24,
+    alignItems: 'center',
+  },
+  heroTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  heroSubtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    opacity: 0.7,
+    lineHeight: 24,
+  },
+  featuresGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 32,
+    gap: 12,
+  },
+  featureCard: {
+    width: '48%',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  featureIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  featureIconText: {
+    fontSize: 20,
+  },
+  featureTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  featureDescription: {
+    fontSize: 12,
+    textAlign: 'center',
+    opacity: 0.8,
+    lineHeight: 16,
+  },
+  buttonContainer: {
+    width: '100%',
+    gap: 12,
+  },
+  primaryButton: {
+    backgroundColor: '#007BFF',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#007BFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  secondaryButton: {
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+  },
+  primaryButtonText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  secondaryButtonText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#007BFF',
   },
   title: {
     fontSize: 32,
@@ -199,6 +382,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'SpaceMono',
     textAlign: 'center',
+  },
+  primaryButtonWrapper: {
+    marginBottom: 12,
+  },
+  buttonIcon: {
+    marginRight: 8,
   },
 });
 

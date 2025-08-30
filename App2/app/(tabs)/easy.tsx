@@ -1,15 +1,17 @@
 import { PERPLEXITY_API_KEY } from '@env';
+import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   useColorScheme,
   View
 } from 'react-native';
@@ -156,7 +158,7 @@ export default function EasyScreen() {
 
   const themeStyles = {
     container: {
-      backgroundColor: isDarkMode ? '#121212' : '#F5F5F5',
+      backgroundColor: isDarkMode ? '#0a0a0a' : '#f8f9fa',
     },
     input: {
       backgroundColor: isDarkMode ? '#1E1E1E' : '#FFFFFF',
@@ -179,6 +181,9 @@ export default function EasyScreen() {
     title: {
       color: isDarkMode ? '#FFFFFF' : '#000000',
     },
+    subtitle: {
+      color: isDarkMode ? '#b0b0b0' : '#6c757d',
+    },
     ratingBox: {
       backgroundColor: isDarkMode ? '#2a2a2a' : '#f0f0f0',
       borderColor: isDarkMode ? '#444' : '#ddd',
@@ -186,116 +191,352 @@ export default function EasyScreen() {
     ratingLabel: {
       color: isDarkMode ? '#ccc' : '#555',
     },
+    logoContainer: {
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
+    },
+    inputSection: {
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.7)',
+    },
+    inputContainer: {
+      borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+    },
+    errorContainer: {
+      backgroundColor: isDarkMode ? 'rgba(220,53,69,0.1)' : 'rgba(220,53,69,0.05)',
+    },
+    resultsSection: {
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.7)',
+    },
+    ratingCard: {
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.9)',
+      borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+    },
+    analysisContainer: {
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.9)',
+      borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+    },
+    analysisText: {
+      color: isDarkMode ? '#EAEAEA' : '#333333',
+    },
+    loadingContainer: {
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.7)',
+    },
+    placeholderContainer: {
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.7)',
+    },
   };
 
   return (
-    <View style={[styles.container, themeStyles.container]}>
-      <Text style={[styles.title, themeStyles.title]}>Easy Mode</Text>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardAvoidingView}
-      >
-        <ScrollView
-          style={{ flex: 1 }}
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="always"
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={[styles.container, themeStyles.container]}>
+        <LinearGradient
+          colors={isDarkMode ? ['#0a0a0a', '#1a1a2e'] : ['#f8f9fa', '#e3f2fd']}
+          style={styles.gradient}
         >
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, themeStyles.input]}
-              placeholder="Enter text to fact-check..."
-              placeholderTextColor={themeStyles.placeholder.color}
-              multiline
-              onChangeText={setText}
-              value={text}
-              onSelectionChange={({ nativeEvent: { selection } }) => setSelection(selection)}
-            />
-            <TouchableOpacity style={styles.button} onPress={handleFactCheck} disabled={loading}>
-              {loading ? (
-                <ActivityIndicator color="#FFFFFF" />
-              ) : (
-                <Text style={styles.buttonText}>
-                  {getButtonText()}
-                </Text>
-              )}
-            </TouchableOpacity>
-          </View>
-
-          {error && <Text style={[styles.errorText, themeStyles.errorText]}>{error}</Text>}
-
-          <View style={[styles.resultContainer, themeStyles.resultContainer]}>
-            {loading ? (
-              <ActivityIndicator size="large" color={isDarkMode ? '#FFFFFF' : '#0000FF'} />
-            ) : analysis || score !== null ? (
-              <>
-                <View style={[styles.ratingBox, themeStyles.ratingBox]}>
-                  <View>
-                    <Text style={[styles.ratingLabel, themeStyles.ratingLabel]}>Truthfulness</Text>
-                    <Text style={[styles.ratingValue, { color: rating.color }]}>{rating.text}</Text>
-                  </View>
-                  {score !== null && (
-                    <View style={styles.scoreCircle}>
-                      <Text style={[styles.scoreText, { color: rating.color }]}>{score}</Text>
-                      <Text style={[styles.scoreTotal, { color: rating.color }]}>/100</Text>
-                    </View>
-                  )}
+          <BlurView intensity={20} tint={isDarkMode ? 'dark' : 'light'} style={styles.blur}>
+            <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+              {/* Header Section */}
+              <View style={styles.headerSection}>
+                <View style={[styles.logoContainer, themeStyles.logoContainer]}>
+                  <Ionicons name="shield-checkmark" size={32} color="#007BFF" />
                 </View>
-                <ScrollView style={styles.scrollView}>
+                <Text style={[styles.title, themeStyles.title]}>Easy Fact-Check</Text>
+                <Text style={[styles.subtitle, themeStyles.subtitle]}>
+                  Quick and simple fact verification
+                </Text>
+              </View>
+
+              {/* Input Section */}
+              <View style={[styles.inputSection, themeStyles.inputSection]}>
+                <Text style={[styles.sectionTitle, themeStyles.title]}>Your Text</Text>
+                <View style={[styles.inputContainer, themeStyles.inputContainer]}>
                   <TextInput
-                    style={[styles.resultText, themeStyles.resultText, styles.outputTextInput]}
-                    value={analysis.replace(/\*\*(.*?)\*\*/g, '$1')} // Remove markdown formatting for text input
-                    onChangeText={setAnalysis}
-                    onSelectionChange={({ nativeEvent: { selection } }) => setOutputSelection(selection)}
-                    multiline
-                    placeholder="Analysis will appear here..."
+                    style={[styles.input, themeStyles.input]}
+                    placeholder="Enter text to fact-check... Select specific text to check only that part."
                     placeholderTextColor={themeStyles.placeholder.color}
-                    editable={true}
+                    multiline
+                    onChangeText={setText}
+                    value={text}
+                    onSelectionChange={({ nativeEvent: { selection } }) => setSelection(selection)}
                   />
-                </ScrollView>
-              </>
-            ) : (
-              <Text style={[styles.placeholder, themeStyles.placeholder]}>
-                The fact-checking analysis will appear here.
-              </Text>
-            )}
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </View>
+                </View>
+                
+                <TouchableOpacity 
+                  style={[styles.checkButton, { opacity: loading ? 0.7 : 1 }]} 
+                  onPress={handleFactCheck} 
+                  disabled={loading}
+                >
+                  <LinearGradient
+                    colors={['#007BFF', '#0056b3']}
+                    style={styles.buttonGradient}
+                  >
+                    {loading ? (
+                      <ActivityIndicator color="#FFFFFF" size="small" />
+                    ) : (
+                      <>
+                        <Ionicons name="search" size={18} color="#ffffff" style={styles.buttonIcon} />
+                        <Text style={styles.buttonText}>{getButtonText()}</Text>
+                      </>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+
+              {/* Error Display */}
+              {error && (
+                <View style={[styles.errorContainer, themeStyles.errorContainer]}>
+                  <Ionicons name="warning" size={16} color="#dc3545" />
+                  <Text style={[styles.errorText, themeStyles.errorText]}>{error}</Text>
+                </View>
+              )}
+
+              {/* Results Section */}
+              {(analysis || score !== null) && (
+                <View style={[styles.resultsSection, themeStyles.resultsSection]}>
+                  <Text style={[styles.sectionTitle, themeStyles.title]}>Analysis</Text>
+                  
+                  {/* Rating Card */}
+                  <View style={[styles.ratingCard, themeStyles.ratingCard]}>
+                    <View style={styles.ratingHeader}>
+                      <View style={styles.ratingInfo}>
+                        <Text style={[styles.ratingLabel, themeStyles.subtitle]}>Truthfulness Score</Text>
+                        <Text style={[styles.ratingValue, { color: rating.color }]}>{rating.text}</Text>
+                      </View>
+                      {score !== null && (
+                        <View style={[styles.scoreCircle, { borderColor: rating.color }]}>
+                          <Text style={[styles.scoreText, { color: rating.color }]}>{score}</Text>
+                          <Text style={[styles.scoreTotal, { color: rating.color }]}>/100</Text>
+                        </View>
+                      )}
+                    </View>
+                  </View>
+
+                  {/* Analysis Container */}
+                  <View style={[styles.analysisContainer, themeStyles.analysisContainer]}>
+                    <Text style={[styles.analysisLabel, themeStyles.subtitle]}>Detailed Analysis</Text>
+                    <TextInput
+                      style={[styles.analysisText, themeStyles.analysisText]}
+                      value={analysis.replace(/\*\*(.*?)\*\*/g, '$1')}
+                      multiline
+                      editable={false}
+                      showSoftInputOnFocus={false}
+                      onSelectionChange={({ nativeEvent: { selection } }) => setOutputSelection(selection)}
+                      placeholder="Analysis will appear here..."
+                      placeholderTextColor={themeStyles.placeholder.color}
+                    />
+                  </View>
+                </View>
+              )}
+
+              {/* Loading State */}
+              {loading && !analysis && (
+                <View style={[styles.loadingContainer, themeStyles.loadingContainer]}>
+                  <ActivityIndicator size="large" color="#007BFF" />
+                  <Text style={[styles.loadingText, themeStyles.subtitle]}>Analyzing your text...</Text>
+                </View>
+              )}
+
+              {/* Placeholder when no results */}
+              {!loading && !analysis && !score && (
+                <View style={[styles.placeholderContainer, themeStyles.placeholderContainer]}>
+                  <Ionicons name="document-text-outline" size={48} color="#ccc" />
+                  <Text style={[styles.placeholderText, themeStyles.placeholder]}>
+                    Enter text above and tap "Fact-Check" to get started
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+          </BlurView>
+        </LinearGradient>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  gradient: {
+    flex: 1,
+  },
+  blur: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flex: 1,
     padding: 20,
-    paddingTop: 50,
+  },
+  headerSection: {
+    alignItems: 'center',
+    marginBottom: 32,
+    paddingTop: 20,
+  },
+  logoContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 8,
     fontFamily: 'SpaceMono',
   },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    opacity: 0.8,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+  inputSection: {
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+  },
+  inputContainer: {
+    borderRadius: 12,
+    borderWidth: 1,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  input: {
+    minHeight: 120,
+    padding: 16,
+    fontSize: 16,
+    textAlignVertical: 'top',
+  },
+  checkButton: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#007BFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  buttonGradient: {
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonIcon: {
+    marginRight: 8,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    gap: 8,
+  },
+  errorText: {
+    fontSize: 14,
+    flex: 1,
+  },
+  resultsSection: {
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+  },
+  ratingCard: {
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    marginBottom: 16,
+  },
+  ratingHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  ratingInfo: {
+    flex: 1,
+  },
+  ratingLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  ratingValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  scoreCircle: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    borderWidth: 2,
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+  },
+  scoreText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  scoreTotal: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginLeft: 2,
+  },
+  analysisContainer: {
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+  },
+  analysisLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  analysisText: {
+    fontSize: 15,
+    lineHeight: 22,
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    padding: 40,
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+  },
+  placeholderContainer: {
+    alignItems: 'center',
+    padding: 40,
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  placeholderText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 16,
+    lineHeight: 24,
+  },
+  // Legacy styles (keeping for compatibility)
   keyboardAvoidingView: {
     flex: 1,
     width: '100%',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  input: {
-    flex: 1,
-    minHeight: 100,
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    fontSize: 16,
-    textAlignVertical: 'top',
-    marginRight: 10,
   },
   button: {
     backgroundColor: '#007BFF',
@@ -304,11 +545,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 100,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   resultContainer: {
     flex: 1,
@@ -332,11 +568,6 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
   },
-  errorText: {
-    textAlign: 'center',
-    marginBottom: 10,
-    fontWeight: 'bold',
-  },
   ratingBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -345,27 +576,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     marginBottom: 15,
-  },
-  ratingLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  ratingValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  scoreCircle: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  scoreText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  scoreTotal: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginLeft: 2,
   },
   outputTextInput: {
     borderWidth: 0,
