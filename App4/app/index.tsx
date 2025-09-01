@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { ColorValue, StyleSheet, Text, TouchableOpacity, View, useColorScheme, useWindowDimensions } from 'react-native';
+import { ColorValue, ScrollView, StyleSheet, Text, TouchableOpacity, View, useColorScheme, useWindowDimensions } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withTiming } from 'react-native-reanimated';
 
 const FloatingCircle = ({ index, colors }: { index: number; colors: readonly [ColorValue, ColorValue, ...ColorValue[]] }) => {
@@ -57,6 +57,12 @@ export default function HomeScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+  const { width, height } = useWindowDimensions();
+  
+  // Responsive dimensions
+  const isSmallScreen = width < 375;
+  const isMediumScreen = width >= 375 && width < 414;
+  const isLargeScreen = width >= 414;
 
   const themeStyles = {
     container: {
@@ -103,92 +109,247 @@ export default function HomeScreen() {
         ))}
       </View>
       <BlurView intensity={80} tint={isDarkMode ? 'dark' : 'light'} style={styles.blur}>
-        <View style={styles.content}>
-          <View style={styles.logoContainer}>
-            <View style={[styles.logoBackground, { backgroundColor: isDarkMode ? '#1a1a2e' : '#ffffff' }]}>
-              <Ionicons name="shield-checkmark" size={64} color="#007BFF" />
-            </View>
-            <Text style={[styles.appName, themeStyles.title]}>FactCheck AI</Text>
-            <Text style={[styles.tagline, themeStyles.subtitle]}>Powered by Advanced AI Models</Text>
-          </View>
-
-          <View style={[styles.heroSection, themeStyles.heroSection]}>
-            <Text style={[styles.title, themeStyles.title]}>Verify Information</Text>
-            <Text style={[styles.title, themeStyles.title]}>with Confidence</Text>
-            <Text style={[styles.subtitle, themeStyles.subtitle]}>
-              Professional fact-checking powered by multiple AI models. Highlight any text to verify specific claims instantly.
-            </Text>
-          </View>
-
-          <View style={styles.featuresGrid}>
-            <View style={[styles.featureCard, themeStyles.featureCard]}>
-              <View style={[styles.featureIcon, { backgroundColor: '#007BFF20' }]}>
-                <Ionicons name="flash" size={28} color="#007BFF" />
-              </View>
-              <Text style={[styles.featureTitle, themeStyles.title]}>Quick Check</Text>
-              <Text style={[styles.featureDescription, themeStyles.subtitle]}>
-                Instant fact-checking with smart text selection
-              </Text>
-            </View>
-
-            <View style={[styles.featureCard, themeStyles.featureCard]}>
-              <View style={[styles.featureIcon, { backgroundColor: '#28a74520' }]}>
-                <Ionicons name="analytics" size={28} color="#28a745" />
-              </View>
-              <Text style={[styles.featureTitle, themeStyles.title]}>Accuracy Score</Text>
-              <Text style={[styles.featureDescription, themeStyles.subtitle]}>
-                Get truthfulness ratings from 0-100
-              </Text>
-            </View>
-
-            <View style={[styles.featureCard, themeStyles.featureCard]}>
-              <View style={[styles.featureIcon, { backgroundColor: '#6f42c120' }]}>
-                <Ionicons name="options" size={28} color="#6f42c1" />
-              </View>
-              <Text style={[styles.featureTitle, themeStyles.title]}>Multiple AIs</Text>
-              <Text style={[styles.featureDescription, themeStyles.subtitle]}>
-                Choose from various AI models for analysis
-              </Text>
-            </View>
-
-            <View style={[styles.featureCard, themeStyles.featureCard]}>
-              <View style={[styles.featureIcon, { backgroundColor: '#fd7e1420' }]}>
-                <Ionicons name="search" size={28} color="#fd7e14" />
-              </View>
-              <Text style={[styles.featureTitle, themeStyles.title]}>Deep Analysis</Text>
-              <Text style={[styles.featureDescription, themeStyles.subtitle]}>
-                Detailed breakdowns with source verification
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <Animated.View
-              entering={require('react-native-reanimated').FadeInUp.delay(500)}
-              style={styles.primaryButtonWrapper}
-            >
-              <TouchableOpacity style={styles.primaryButton} onPress={() => router.push('/(tabs)/easy')}>
-                <LinearGradient
-                  colors={['#007BFF', '#0056b3']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.buttonGradient}
-                >
-                  <Ionicons name="arrow-forward" size={20} color="white" style={styles.buttonIcon} />
-                  <Text style={styles.primaryButtonText}>Start Fact-Checking</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </Animated.View>
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={[styles.scrollContent, { minHeight: height }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={[styles.content, { paddingHorizontal: isSmallScreen ? 16 : 24 }]}>
             
-            <TouchableOpacity 
-              style={[styles.secondaryButton, themeStyles.secondaryButton]} 
-              onPress={() => router.push('/(tabs)/professional')}
-            >
-              <Ionicons name="settings" size={18} color="#007BFF" style={styles.buttonIcon} />
-              <Text style={[styles.secondaryButtonText, { color: '#007BFF' }]}>Professional Mode</Text>
-            </TouchableOpacity>
+            {/* Logo Section */}
+            <View style={[styles.logoContainer, { marginTop: height * 0.08 }]}>
+              <View style={[
+                styles.logoBackground, 
+                { 
+                  backgroundColor: isDarkMode ? '#1a1a2e' : '#ffffff',
+                  width: isSmallScreen ? 100 : 120,
+                  height: isSmallScreen ? 100 : 120,
+                  borderRadius: isSmallScreen ? 50 : 60,
+                }
+              ]}>
+                <Ionicons name="shield-checkmark" size={isSmallScreen ? 48 : 64} color="#007BFF" />
+              </View>
+              <Text style={[
+                styles.appName, 
+                themeStyles.title,
+                { fontSize: isSmallScreen ? 28 : isMediumScreen ? 32 : 36 }
+              ]}>
+                FactCheck AI
+              </Text>
+              <Text style={[
+                styles.tagline, 
+                themeStyles.subtitle,
+                { fontSize: isSmallScreen ? 14 : 16 }
+              ]}>
+                Powered by Advanced AI Models
+              </Text>
+            </View>
+
+            {/* Hero Section */}
+            <View style={[
+              styles.heroSection, 
+              themeStyles.heroSection,
+              { marginVertical: isSmallScreen ? 16 : 24 }
+            ]}>
+              <Text style={[
+                styles.heroTitle, 
+                themeStyles.title,
+                { fontSize: isSmallScreen ? 22 : isMediumScreen ? 26 : 30 }
+              ]}>
+                Verify Information
+              </Text>
+              <Text style={[
+                styles.heroTitle, 
+                themeStyles.title,
+                { fontSize: isSmallScreen ? 22 : isMediumScreen ? 26 : 30 }
+              ]}>
+                with Confidence
+              </Text>
+              <Text style={[
+                styles.heroSubtitle, 
+                themeStyles.subtitle,
+                { 
+                  fontSize: isSmallScreen ? 14 : 16,
+                  paddingHorizontal: isSmallScreen ? 8 : 16
+                }
+              ]}>
+                Professional fact-checking powered by multiple AI models. Highlight any text to verify specific claims instantly.
+              </Text>
+            </View>
+
+            {/* Features Grid */}
+            <View style={[
+              styles.featuresGrid,
+              { gap: isSmallScreen ? 8 : 12 }
+            ]}>
+              <View style={[
+                styles.featureCard, 
+                themeStyles.featureCard,
+                { width: isSmallScreen ? '47%' : '48%' }
+              ]}>
+                <View style={[styles.featureIcon, { backgroundColor: '#007BFF20' }]}>
+                  <Ionicons name="flash" size={isSmallScreen ? 24 : 28} color="#007BFF" />
+                </View>
+                <Text style={[
+                  styles.featureTitle, 
+                  themeStyles.title,
+                  { fontSize: isSmallScreen ? 14 : 16 }
+                ]}>
+                  Quick Check
+                </Text>
+                <Text style={[
+                  styles.featureDescription, 
+                  themeStyles.subtitle,
+                  { fontSize: isSmallScreen ? 11 : 12 }
+                ]}>
+                  Instant fact-checking with smart text selection
+                </Text>
+              </View>
+
+              <View style={[
+                styles.featureCard, 
+                themeStyles.featureCard,
+                { width: isSmallScreen ? '47%' : '48%' }
+              ]}>
+                <View style={[styles.featureIcon, { backgroundColor: '#28a74520' }]}>
+                  <Ionicons name="analytics" size={isSmallScreen ? 24 : 28} color="#28a745" />
+                </View>
+                <Text style={[
+                  styles.featureTitle, 
+                  themeStyles.title,
+                  { fontSize: isSmallScreen ? 14 : 16 }
+                ]}>
+                  Accuracy Score
+                </Text>
+                <Text style={[
+                  styles.featureDescription, 
+                  themeStyles.subtitle,
+                  { fontSize: isSmallScreen ? 11 : 12 }
+                ]}>
+                  Get truthfulness ratings from 0-100
+                </Text>
+              </View>
+
+              <View style={[
+                styles.featureCard, 
+                themeStyles.featureCard,
+                { width: isSmallScreen ? '47%' : '48%' }
+              ]}>
+                <View style={[styles.featureIcon, { backgroundColor: '#6f42c120' }]}>
+                  <Ionicons name="options" size={isSmallScreen ? 24 : 28} color="#6f42c1" />
+                </View>
+                <Text style={[
+                  styles.featureTitle, 
+                  themeStyles.title,
+                  { fontSize: isSmallScreen ? 14 : 16 }
+                ]}>
+                  Multiple AIs
+                </Text>
+                <Text style={[
+                  styles.featureDescription, 
+                  themeStyles.subtitle,
+                  { fontSize: isSmallScreen ? 11 : 12 }
+                ]}>
+                  Choose from various AI models for analysis
+                </Text>
+              </View>
+
+              <View style={[
+                styles.featureCard, 
+                themeStyles.featureCard,
+                { width: isSmallScreen ? '47%' : '48%' }
+              ]}>
+                <View style={[styles.featureIcon, { backgroundColor: '#fd7e1420' }]}>
+                  <Ionicons name="search" size={isSmallScreen ? 24 : 28} color="#fd7e14" />
+                </View>
+                <Text style={[
+                  styles.featureTitle, 
+                  themeStyles.title,
+                  { fontSize: isSmallScreen ? 14 : 16 }
+                ]}>
+                  Deep Analysis
+                </Text>
+                <Text style={[
+                  styles.featureDescription, 
+                  themeStyles.subtitle,
+                  { fontSize: isSmallScreen ? 11 : 12 }
+                ]}>
+                  Detailed breakdowns with source verification
+                </Text>
+              </View>
+            </View>
+
+            {/* Button Container */}
+            <View style={[
+              styles.buttonContainer,
+              { 
+                marginTop: isSmallScreen ? 24 : 32,
+                marginBottom: isSmallScreen ? 32 : 48,
+                paddingHorizontal: isSmallScreen ? 0 : 16
+              }
+            ]}>
+              <Animated.View
+                entering={require('react-native-reanimated').FadeInUp.delay(500)}
+                style={styles.primaryButtonWrapper}
+              >
+                <TouchableOpacity 
+                  style={[
+                    styles.primaryButton,
+                    { 
+                      paddingVertical: isSmallScreen ? 14 : 16,
+                      paddingHorizontal: isSmallScreen ? 24 : 32
+                    }
+                  ]} 
+                  onPress={() => router.push('/(tabs)/easy')}
+                >
+                  <LinearGradient
+                    colors={['#007BFF', '#0056b3']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[
+                      styles.buttonGradient,
+                      { 
+                        paddingVertical: isSmallScreen ? 14 : 16,
+                        paddingHorizontal: isSmallScreen ? 24 : 32
+                      }
+                    ]}
+                  >
+                    <Ionicons name="arrow-forward" size={isSmallScreen ? 18 : 20} color="white" style={styles.buttonIcon} />
+                    <Text style={[
+                      styles.primaryButtonText,
+                      { fontSize: isSmallScreen ? 16 : 18 }
+                    ]}>
+                      Start Fact-Checking
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </Animated.View>
+              
+              <TouchableOpacity 
+                style={[
+                  styles.secondaryButton, 
+                  themeStyles.secondaryButton,
+                  { 
+                    paddingVertical: isSmallScreen ? 14 : 16,
+                    paddingHorizontal: isSmallScreen ? 24 : 32
+                  }
+                ]} 
+                onPress={() => router.push('/(tabs)/professional')}
+              >
+                <Ionicons name="settings" size={isSmallScreen ? 16 : 18} color="#007BFF" style={styles.buttonIcon} />
+                <Text style={[
+                  styles.secondaryButtonText, 
+                  { 
+                    color: '#007BFF',
+                    fontSize: isSmallScreen ? 16 : 18
+                  }
+                ]}>
+                  Professional Mode
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </BlurView>
     </View>
   );
@@ -206,134 +367,152 @@ const styles = StyleSheet.create({
   },
   blur: {
     ...StyleSheet.absoluteFillObject,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   content: {
     alignItems: 'center',
-    padding: 24,
+    flex: 1,
+    justifyContent: 'center',
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 32,
   },
   logoBackground: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  logoText: {
-    fontSize: 48,
-    fontWeight: 'bold',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 10,
   },
   appName: {
-    fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
     letterSpacing: 0.5,
   },
   tagline: {
-    fontSize: 16,
     textAlign: 'center',
     opacity: 0.8,
   },
   heroSection: {
-    padding: 24,
-    borderRadius: 16,
-    marginVertical: 24,
+    padding: 20,
+    borderRadius: 20,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   heroTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+    fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
+    letterSpacing: -0.5,
   },
   heroSubtitle: {
-    fontSize: 16,
     textAlign: 'center',
-    opacity: 0.7,
-    lineHeight: 24,
+    opacity: 0.8,
+    lineHeight: 22,
+    marginTop: 12,
   },
   featuresGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 32,
-    gap: 12,
+    marginTop: 32,
+    width: '100%',
   },
   featureCard: {
-    width: '48%',
-    padding: 16,
-    borderRadius: 12,
+    padding: 20,
+    borderRadius: 16,
     borderWidth: 1,
     alignItems: 'center',
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
   },
   featureIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
-  },
-  featureIconText: {
-    fontSize: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   featureTitle: {
-    fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   featureDescription: {
-    fontSize: 12,
     textAlign: 'center',
     opacity: 0.8,
-    lineHeight: 16,
+    lineHeight: 18,
   },
   buttonContainer: {
     width: '100%',
-    gap: 12,
+    gap: 16,
   },
   primaryButton: {
-    backgroundColor: '#007BFF',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
     shadowColor: '#007BFF',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
-    shadowRadius: 8,
+    shadowRadius: 12,
     elevation: 8,
   },
   secondaryButton: {
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
     borderWidth: 2,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    shadowColor: '#007BFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
   },
   primaryButtonText: {
-    fontSize: 18,
     fontWeight: '600',
     color: '#ffffff',
   },
   secondaryButtonText: {
-    fontSize: 18,
     fontWeight: '600',
-    color: '#007BFF',
   },
+  buttonGradient: {
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  primaryButtonWrapper: {
+    marginBottom: 8,
+  },
+  buttonIcon: {
+    marginRight: 8,
+  },
+  // Legacy styles for backward compatibility
   title: {
     fontSize: 32,
     fontWeight: 'bold',
@@ -372,22 +551,24 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 6,
   },
-  buttonGradient: {
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-  },
   buttonText: {
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'SpaceMono',
     textAlign: 'center',
   },
-  primaryButtonWrapper: {
-    marginBottom: 12,
+  logoText: {
+    fontSize: 48,
+    fontWeight: 'bold',
   },
-  buttonIcon: {
-    marginRight: 8,
+  heroTitleLegacy: {
+    fontSize: 24,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  featureIconText: {
+    fontSize: 20,
   },
 });
 
