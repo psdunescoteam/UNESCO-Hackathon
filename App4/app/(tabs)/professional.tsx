@@ -28,7 +28,7 @@ export default function Professional() {
   const [outputSelection, setOutputSelection] = useState<{ start: number; end: number } | null>(null);
   const colorScheme = useColorScheme();
 
-  const PERPLEXITY_API_KEY = Constants.expoConfig?.extra?.PERPLEXITY_API_KEY;
+  const PERPLEXITY_API_KEY = (Constants as any).expoConfig?.extra?.PERPLEXITY_API_KEY;
 
   const handleFactCheck = async () => {
     Keyboard.dismiss();

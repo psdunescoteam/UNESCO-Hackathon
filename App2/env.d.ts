@@ -1,3 +1,14 @@
-declare module '@env' {
-  export const PERPLEXITY_API_KEY: string;
+declare module 'expo-constants' {
+  export interface ExpoConfig {
+    extra?: {
+      PERPLEXITY_API_KEY?: string;
+    };
+  }
+
+  export interface Constants {
+    expoConfig?: ExpoConfig;
+  }
+
+  const Constants: Constants;
+  export default Constants;
 }

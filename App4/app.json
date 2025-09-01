@@ -8,9 +8,6 @@
     "scheme": "app4",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "extra": {
-      "PERPLEXITY_API_KEY": "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"
-    },
     "ios": {
       "supportsTablet": true
     },

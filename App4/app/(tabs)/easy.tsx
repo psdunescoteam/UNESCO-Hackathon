@@ -27,7 +27,7 @@ export default function EasyScreen() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
-  const PERPLEXITY_API_KEY = Constants.expoConfig?.extra?.PERPLEXITY_API_KEY;
+  const PERPLEXITY_API_KEY = (Constants as any).expoConfig?.extra?.PERPLEXITY_API_KEY;
 
   const handleFactCheck = async () => {
     Keyboard.dismiss();
