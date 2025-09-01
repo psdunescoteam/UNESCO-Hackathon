@@ -134,14 +134,14 @@ export default function HomeScreen() {
                 themeStyles.title,
                 { fontSize: isSmallScreen ? 28 : isMediumScreen ? 32 : 36 }
               ]}>
-                FactCheck AI
+                MILLens+
               </Text>
               <Text style={[
                 styles.tagline, 
                 themeStyles.subtitle,
                 { fontSize: isSmallScreen ? 14 : 16 }
               ]}>
-                Powered by Advanced AI Models
+                Media & Information Literacy Lens Plus
               </Text>
             </View>
 
@@ -173,7 +173,7 @@ export default function HomeScreen() {
                   paddingHorizontal: isSmallScreen ? 8 : 16
                 }
               ]}>
-                Professional fact-checking powered by multiple AI models. Highlight any text to verify specific claims instantly.
+                Professional media literacy analysis powered by multiple AI models. Verify information accuracy and detect misinformation instantly.
               </Text>
             </View>
 
@@ -202,7 +202,7 @@ export default function HomeScreen() {
                   themeStyles.subtitle,
                   { fontSize: isSmallScreen ? 11 : 12 }
                 ]}>
-                  Instant fact-checking with smart text selection
+                  Instant media analysis with smart text selection
                 </Text>
               </View>
 
@@ -319,7 +319,7 @@ export default function HomeScreen() {
                       styles.primaryButtonText,
                       { fontSize: isSmallScreen ? 16 : 18 }
                     ]}>
-                      Start Fact-Checking
+                      Start Analysis
                     </Text>
                   </LinearGradient>
                 </TouchableOpacity>

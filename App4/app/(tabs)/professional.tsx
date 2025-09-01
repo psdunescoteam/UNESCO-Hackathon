@@ -30,7 +30,7 @@ export default function Professional() {
 
   const PERPLEXITY_API_KEY = (Constants as any).expoConfig?.extra?.PERPLEXITY_API_KEY;
 
-  const handleFactCheck = async () => {
+  const handleAnalysis = async () => {
     Keyboard.dismiss();
     
     // Check if we have text selected in the output (for re-checking)
@@ -52,7 +52,7 @@ export default function Professional() {
     }
 
     if (!textToCheck.trim()) {
-      setError('Please enter or select text to fact-check.');
+      setError('Please enter or select text to analyze.');
       return;
     }
     
@@ -69,9 +69,9 @@ export default function Professional() {
       };
 
       const systemPrompt = `
-        You are a fact-checking AI. Analyze the following text for factual accuracy.
+        You are a media literacy analysis AI. Analyze the following text for factual accuracy and potential misinformation.
         Respond in a JSON format with two keys:
-        1. "score": An integer from 0 (completely false) to 100 (completely true).
+        1. "score": An integer from 0 (completely false/misleading) to 100 (completely true/reliable).
         2. "analysis": A string containing your detailed analysis. In your analysis, use markdown for formatting. For example, use ** for bolding important corrections or confirmations.
       `;
 
@@ -114,8 +114,8 @@ export default function Professional() {
           setError("Couldn't determine a truth score. Displaying raw analysis.");
         }
       } catch (error) {
-        console.error('Error during fact-check:', error);
-        setError('Sorry, an error occurred while trying to fact-check.');
+        console.error('Error during analysis:', error);
+        setError('Sorry, an error occurred while trying to analyze the text.');
         setResult('');
         setScore(null);
       } finally {
@@ -144,7 +144,7 @@ export default function Professional() {
   const getButtonText = () => {
     if (isOutputTextSelected) return 'Check Output Selection';
     if (isInputTextSelected) return 'Check Input Selection';
-    return 'Fact-Check';
+    return 'Analyze';
   };
 
   const themeStyles = {
@@ -231,9 +231,9 @@ export default function Professional() {
                 color={colorScheme === 'dark' ? '#007BFF' : '#007BFF'} 
                 style={styles.headerIcon}
               />
-              <Text style={[styles.title, themeStyles.title]}>FactCheck Pro</Text>
+              <Text style={[styles.title, themeStyles.title]}>MILLens+ Pro</Text>
             </View>
-            <Text style={[styles.subtitle, themeStyles.subtitle]}>Advanced AI-Powered Verification</Text>
+            <Text style={[styles.subtitle, themeStyles.subtitle]}>Advanced AI-Powered Media Analysis</Text>
           </View>
 
           <View style={[styles.modelSection, themeStyles.modelSection]}>
@@ -259,7 +259,7 @@ export default function Professional() {
             <View style={[styles.inputWrapper, themeStyles.inputWrapper]}>
               <TextInput
                 style={[styles.input, themeStyles.input]}
-                placeholder="Enter the text you want to fact-check..."
+                placeholder="Enter the text you want to analyze..."
                 placeholderTextColor={colorScheme === 'dark' ? '#666' : '#999'}
                 onChangeText={setText}
                 value={text}
@@ -278,7 +278,7 @@ export default function Professional() {
 
           <TouchableOpacity 
             style={[styles.button, loading && styles.buttonDisabled]} 
-            onPress={handleFactCheck} 
+            onPress={handleAnalysis} 
             disabled={loading}
           >
             <View style={styles.buttonContent}>

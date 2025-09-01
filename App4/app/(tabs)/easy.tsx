@@ -29,7 +29,7 @@ export default function EasyScreen() {
 
   const PERPLEXITY_API_KEY = (Constants as any).expoConfig?.extra?.PERPLEXITY_API_KEY;
 
-  const handleFactCheck = async () => {
+  const handleAnalysis = async () => {
     Keyboard.dismiss();
     
     // Check if we have text selected in the output (for re-checking)
@@ -55,7 +55,7 @@ export default function EasyScreen() {
     }
 
     if (!textToCheck.trim()) {
-      setError('Please enter or select text to fact-check.');
+      setError('Please enter or select text to analyze.');
       return;
     }
     
@@ -65,9 +65,9 @@ export default function EasyScreen() {
     setScore(null);
 
     const systemPrompt = `
-      You are a fact-checking AI. Analyze the following text for factual accuracy.
+      You are a media literacy analysis AI. Analyze the following text for factual accuracy and potential misinformation.
       Respond in a JSON format with two keys:
-      1. "score": An integer from 0 (completely false) to 100 (completely true).
+      1. "score": An integer from 0 (completely false/misleading) to 100 (completely true/reliable).
       2. "analysis": A string containing your detailed analysis. In your analysis, use markdown for formatting. For example, use ** for bolding important corrections or confirmations.
     `;
 
@@ -155,7 +155,7 @@ export default function EasyScreen() {
   const getButtonText = () => {
     if (isOutputTextSelected) return 'Check Output Selection';
     if (isInputTextSelected) return 'Check Input Selection';
-    return 'Fact-Check';
+    return 'Analyze';
   };
 
   const themeStyles = {
@@ -241,9 +241,9 @@ export default function EasyScreen() {
                 <View style={[styles.logoContainer, themeStyles.logoContainer]}>
                   <Ionicons name="shield-checkmark" size={32} color="#007BFF" />
                 </View>
-                <Text style={[styles.title, themeStyles.title]}>Easy Fact-Check</Text>
+                <Text style={[styles.title, themeStyles.title]}>Easy Analysis</Text>
                 <Text style={[styles.subtitle, themeStyles.subtitle]}>
-                  Quick and simple fact verification
+                  Quick and simple media verification
                 </Text>
               </View>
 
@@ -253,7 +253,7 @@ export default function EasyScreen() {
                 <View style={[styles.inputContainer, themeStyles.inputContainer]}>
                   <TextInput
                     style={[styles.input, themeStyles.input]}
-                    placeholder="Enter text to fact-check... Select specific text to check only that part."
+                    placeholder="Enter text to analyze... Select specific text to check only that part."
                     placeholderTextColor={themeStyles.placeholder.color}
                     multiline
                     onChangeText={setText}
@@ -264,7 +264,7 @@ export default function EasyScreen() {
                 
                 <TouchableOpacity 
                   style={[styles.checkButton, { opacity: loading ? 0.7 : 1 }]} 
-                  onPress={handleFactCheck} 
+                  onPress={handleAnalysis} 
                   disabled={loading}
                 >
                   <LinearGradient
@@ -342,7 +342,7 @@ export default function EasyScreen() {
                 <View style={[styles.placeholderContainer, themeStyles.placeholderContainer]}>
                   <Ionicons name="document-text-outline" size={48} color="#ccc" />
                   <Text style={[styles.placeholderText, themeStyles.placeholder]}>
-                    Enter text above and tap "Fact-Check" to get started
+                                        Enter text above and tap "Analyze" to get started
                   </Text>
                 </View>
               )}

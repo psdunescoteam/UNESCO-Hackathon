@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "App4",
-    "slug": "App4",
+    "name": "MILLens+",
+    "slug": "millens-plus",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "app4",
+    "scheme": "millens-plus",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
